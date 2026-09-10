@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <defs>
+        <linearGradient id="grokStyleGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#06b6d4"/>
+            <stop offset="100%" stop-color="#10b981"/>
+        </linearGradient>
+    </defs>
+
+    <!-- 圆形外框 -->
+    <circle cx="32" cy="32" r="30" fill="none" stroke="url(#grokStyleGrad)" stroke-width="3.5"/>
+
+    <!-- 斜向分化线：粗圆角线条，从左上到右下，带轻微弧度 -->
+    <path d="M18,14 Q32,32 46,50"
+        fill="none"
+        stroke="url(#grokStyleGrad)"
+        stroke-width="3.5"
+        stroke-linecap="round"/>
+
+    <!-- 右上装饰点：平衡构图，呼应Grok图标的不对称细节 -->
+    <circle cx="44" cy="20" r="2.5" fill="url(#grokStyleGrad)"/>
+</svg>
