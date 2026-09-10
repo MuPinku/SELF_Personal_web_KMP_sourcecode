@@ -36,3 +36,9 @@ kotlin {
         }
     }
 }
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "main.unified.resources"
+    generateResClass = always
+}

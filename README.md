@@ -21,3 +21,10 @@ Web 端通过 jsMain 编译为 JavaScript 运行于浏览器。
 # 开发构建（含 Source Map，便于调试）
 ./gradlew jsBrowserDevelopmentWebpack
 ```
+
+进行项目运行 
+```bash
+./gradlew jsBrowserDevelopmentRun  
+```
+
+  
