@@ -27,6 +27,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.haze.core)
+            implementation(libs.haze.materials)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
