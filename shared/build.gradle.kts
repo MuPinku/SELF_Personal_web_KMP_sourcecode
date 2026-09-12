@@ -29,6 +29,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.haze.core)
             implementation(libs.haze.materials)
+            implementation(libs.markdown.renderer)
+            implementation(libs.markdown.renderer.code)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

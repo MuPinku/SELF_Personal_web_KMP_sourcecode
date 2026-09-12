@@ -5,15 +5,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -26,121 +32,12 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.HazeMaterials
 import main.unified.resources.Res
 import main.unified.resources.home
 import main.unified.theme.LocalAppIcons
 import org.jetbrains.compose.resources.painterResource
 
-@Composable
-fun AppScaffold() {
-    val hazeState = remember { HazeState() }
-    var selectedIndex by remember { mutableStateOf(0) }
-
-    // 全局最外层容器
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            // 基础暗色夜空背景
-            .background(Color(0xFF0B0D13))
-    ) {
-        // =========================================================================
-        // 🔮 关键解法：为什么之前看不出玻璃拟态？
-        // 因为纯色/简单渐变被模糊后依然像纯色！玻璃拟态必须有【穿透的高对比度光斑/图元】。
-        // 下面这层作为 hazeSource，专门在左上角（侧边栏正后方）布置了炫彩环境光球（Ambient Orbs）。
-        // =========================================================================
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(state = hazeState)
-        ) {
-            // 1号光斑：紫粉色霓虹球（恰好穿过侧边栏后方，形成强烈的磨砂折射）
-            Box(
-                modifier = Modifier
-                    .offset(x = (-30).dp, y = 60.dp)
-                    .size(240.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                Color(0xFFEC4899).copy(alpha = 0.65f), // 荧光玫红
-                                Color(0xFF8B5CF6).copy(alpha = 0.35f), // 梦幻紫
-                                Color.Transparent
-                            )
-                        )
-                    )
-                    .blur(60.dp) // 光斑自身大范围漫反射
-            )
-
-            // 2号光斑：深海青蓝球（在中下方投射，形成冷暖交织）
-            Box(
-                modifier = Modifier
-                    .offset(x = 10.dp, y = 360.dp)
-                    .size(260.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                Color(0xFF06B6D4).copy(alpha = 0.55f), // 荧光青
-                                Color(0xFF3B82F6).copy(alpha = 0.25f), // 湛蓝
-                                Color.Transparent
-                            )
-                        )
-                    )
-                    .blur(70.dp)
-            )
-
-            // 3号光斑：右上角主内容背景微光
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 80.dp, y = (-50).dp)
-                    .size(360.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                Color(0xFF6366F1).copy(alpha = 0.25f),
-                                Color.Transparent
-                            )
-                        )
-                    )
-                    .blur(90.dp)
-            )
-        }
-
-        // =========================================================================
-        // 🚀 悬浮布局：侧边栏不再顶天立地，而是悬浮胶囊岛（Floating Capsule Island）
-        // =========================================================================
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp) // 四周留出间隙，产生悬浮漂浮感
-        ) {
-            // 浮动玻璃拟态侧边栏
-            FloatingGlassSidebar(
-                hazeState = hazeState,
-                selectedIndex = selectedIndex,
-                onNavigate = { selectedIndex = it },
-                modifier = Modifier
-                    .width(72.dp)
-                    .fillMaxHeight()
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // 主内容区（同样带一点微弱玻璃悬浮感）
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                MainContent(selectedIndex = selectedIndex)
-            }
-        }
-    }
-}
 
 /**
  * 核心：浮动玻璃侧边栏组件
@@ -305,52 +202,6 @@ private fun SidebarIcon(
             text = label,
             fontSize = 10.sp,
             color = contentColor
-        )
-    }
-}
-
-/**
- * 右侧主内容卡片（配套浮动半透明玻璃质感）
- */
-@Composable
-private fun MainContent(selectedIndex: Int) {
-    val titles = listOf("首页内容看板", "全局搜索中心", "系统配置中心")
-    val contentShape = RoundedCornerShape(24.dp)
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .shadow(
-                elevation = 16.dp,
-                shape = contentShape,
-                ambientColor = Color.Black.copy(alpha = 0.5f)
-            )
-            .clip(contentShape)
-            // 磨砂半透明卡片
-            .background(Color(0xFF131722).copy(alpha = 0.4f))
-            .border(
-                width = 1.dp,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.2f),
-                        Color.White.copy(alpha = 0.05f)
-                    )
-                ),
-                shape = contentShape
-            )
-            .padding(32.dp)
-    ) {
-        Text(
-            text = titles.getOrElse(selectedIndex) { "页面" },
-            color = Color(0xFFF8FAFC),
-            fontSize = 24.sp
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = "观察左侧侧边栏：后方有炫彩霓虹光斑穿透，并被 Haze 实时雾化折射，呈现出立体的玻璃拟态（Glassmorphism）效果。",
-            color = Color(0xFF94A3B8),
-            fontSize = 14.sp,
-            lineHeight = 22.sp
         )
     }
 }
